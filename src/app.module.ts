@@ -9,6 +9,8 @@ import { HabitsModule } from './habits/habits.module';
 import { User } from './users/entities/user.entity';
 import { UsersModule } from './users/users.module';
 import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
+import { DatesModule } from './dates/dates.module';
+import { Dates } from './dates/entities/date.entity';
 
 
 
@@ -46,14 +48,16 @@ import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
       autoLoadEntities: true,
       entities: [
         Habit,
-        User
+        User,
+        Dates
 
       ],
       synchronize: true,
     }),
     HabitsModule,
     UsersModule,
-    MailerModule
+    MailerModule,
+    DatesModule
     
  
   ],

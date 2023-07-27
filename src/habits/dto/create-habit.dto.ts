@@ -5,4 +5,5 @@ export class CreateHabitDto {
   name: string;
   streak: number;
   user: User
+  
 }

@@ -19,15 +19,16 @@ export class HabitsService {
 
   findAll() {
    
-    return this.repo.find();
+    return this.repo.find({relations: ['date']});
+  
   }
   email(){
     this.mailerService.sendMail({
-      to: 'Flipflipflipflip19@gmail.com      ', // list of receivers
+      to: '', // list of receivers
       from: 'marucero33@gmail.com', // sender address
-      subject: 'la wea que funciona riko ✔', // Subject line
+      subject: 'pido perdón ✔', // Subject line
       text: 'welcome', // plaintext body
-      html: '<b> mi primera página web  hola esta es mi pagina web los quiero mucho noelia estoy haciendo mi pagina web que emocion bueno y ahora que hago </b>', // HTML body content
+      html: '<b> Estimado Flip, Espero que este mensaje le encuentre bien. Me dirijo a usted con el propósito de ofrecerle mis más sinceras disculpas por el correo electrónico que le envié anteriormente. Reconozco plenamente mi error y lamento profundamente cualquier inconveniente que haya causado. Permítame explicarle lo sucedido. Resulta que, durante el proceso de desarrollo y pruebas de los endpoints, dejé guardado su correo electrónico en el código. Sin darme cuenta, al realizar pruebas recientes, el sistema envió automáticamente el correo electrónico que usted recibió sin mi intención de hacerlo. Reconozco plenamente mi falta de atención y le aseguro que tomaré todas las medidas necesarias para evitar que esto vuelva a ocurrir en el futuro. Valoramos enormemente la relación que hemos construido con usted y su organización, y le ruego que no permita que este incidente afecte nuestra colaboración. Me comprometo a revisar detenidamente mis procesos y garantizar que se tomen precauciones adicionales para evitar situaciones similares en adelante. Además, si hay algo que pueda hacer para remediar esta situación o para compensarle por cualquier inconveniente causado, por favor, no dude en hacérmelo saber. Una vez más, lamento sinceramente el error cometido y le pido disculpas por cualquier molestia o preocupación que haya causado. Agradezco su comprensión y le reitero mi compromiso de mejorar en el futuro. Atentamente, Hernández, Marcelo Ismael. </b>', // HTML body content
     }).then((success) => {
       return console.log(success)
     })

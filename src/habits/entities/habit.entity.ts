@@ -1,6 +1,7 @@
 import { type } from "os";
+import { Dates } from "src/dates/entities/date.entity";
 import { User } from "src/users/entities/user.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Habit {
@@ -8,8 +9,10 @@ export class Habit {
     id: number
     @Column()
     name: string
-    @ManyToOne(type=> User, user => user.habit )
+    @ManyToOne(()=> User, user => user.habit )
     user: User
+    @OneToMany(()=> Dates, date => date.habit )
+    date: Dates[]
     @Column({default:0})
     streak: number
 }

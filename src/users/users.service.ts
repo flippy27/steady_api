@@ -1,30 +1,60 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import {
+  QueryBuilder,
+  Repository,
+  createQueryBuilder,
+  JoinColumn,
+} from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import { Dates } from 'src/dates/entities/date.entity';
+import { Habit } from 'src/habits/entities/habit.entity';
+import * as moment from 'moment';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private repo: Repository<User>,  ) {}
+    private userRepo: Repository<User>,
+    @InjectRepository(Dates)
+    private datesRepo: Repository<Dates>,
+    @InjectRepository(Habit)
+    private habitRepo: Repository<Habit>,
+  ) {}
   create(createUserDto: CreateUserDto) {
-    return this.repo.insert(createUserDto);
+    return this.userRepo.insert(createUserDto);
   }
 
   async findAll() {
-    return await this.repo.find({
+    return await this.userRepo.find({
       relations: ['habit'],
     });
   }
 
   findOne(id: number) {
-    return this.repo.find({
+    return this.userRepo.find({
       where: { id: id },
       relations: ['habit'],
     });
+  }
+
+  async findOneWithData(id: number) {
+    const query = this.userRepo
+      .createQueryBuilder('u')
+      .select()
+      .leftJoinAndSelect('u.habit', 'h')
+      .leftJoinAndSelect('h.date', 'd')
+      
+      .where('d.date > :startDate', {
+        startDate: moment().subtract(7, 'days'),
+      })
+      .andWhere('d.date < :endDate', { endDate: moment() })
+      .andWhere('u.id = :id', { id })
+      .orderBy('d', 'DESC')
+      .getOne();
+    return query;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
