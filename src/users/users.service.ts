@@ -44,15 +44,11 @@ export class UsersService {
     const query = this.userRepo
       .createQueryBuilder('u')
       .select()
-      .leftJoinAndSelect('u.habit', 'h')
-      .leftJoinAndSelect('h.date', 'd')
-      
-      .where('d.date > :startDate', {
-        startDate: moment().subtract(7, 'days'),
+      .leftJoinAndMapMany('u.habit', 'u.habit', 'h', 'h.date > :startDate', {
+        startDate: moment().subtract(7, 'days').format('YYYY-MM-DD'),
       })
-      .andWhere('d.date < :endDate', { endDate: moment() })
-      .andWhere('u.id = :id', { id })
-      .orderBy('d', 'DESC')
+      .where('u.id = :id', { id })
+      .orderBy('h.date', 'DESC')
       .getOne();
     return query;
   }
