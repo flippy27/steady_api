@@ -1,36 +1,20 @@
-# ---- Base Node ----
-FROM node:16-alpine3.17 AS base
-RUN apk add --no-cache git
-WORKDIR /app
-RUN mkdir src
-RUN chown -R node:node /app
-USER node
+# Base image
+FROM node:18-alpine3.17
 
-# ---- Dependencies ----
-FROM base AS dependencies
-COPY ./package*.json ./
-RUN npm install -d
+# Create app directory
+WORKDIR /usr/src/steady_app
 
-# ---- Build ----
-FROM dependencies AS build
-WORKDIR /app
-COPY ./src /app/src
-COPY ./ts*.json ./
-COPY ormconfig.js ./
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+COPY package*.json ./
+
+# Install app dependencies
+RUN npm install
+
+# Bundle app source
+COPY . .
+
+# Creates a "dist" folder with the production build
 RUN npm run build
 
-# ---- Polishing ----
-FROM base AS polishing
-COPY ./package*.json ./
-RUN npm install --production -d
-
-# --- Release with Alpine ----
-FROM node:16-alpine3.17 AS release
-WORKDIR /app
-RUN mkdir dist node_modules
-RUN chown -R node:node /app
-USER node
-COPY --from=polishing app/node_modules node_modules/
-COPY --from=build app/dist dist/
-COPY --from=build app/ormconfig.js ./
-CMD ["node","dist/main.js"]
+# Start the server using the production build
+CMD [ "node", "dist/main.js" ]
